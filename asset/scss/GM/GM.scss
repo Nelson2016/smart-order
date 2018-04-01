@@ -1,0 +1,6 @@
+@import "../common.scss";
+@import "../constant.scss";
+
+.GM-container {
+  @include wrap;
+}

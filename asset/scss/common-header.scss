@@ -1,0 +1,21 @@
+@import "./common.scss";
+@import "./constant.scss";
+
+.header-container {
+  height: 60px;
+  width: 100%;
+  background: $color-blue;
+  display: flex;
+  align-items: center;
+  padding: 0 $margin-padding-4;
+  justify-content: space-between;
+
+  h1 {
+    color: $font-color-white;
+  }
+
+  span {
+    color: $font-color-white;
+  }
+
+}

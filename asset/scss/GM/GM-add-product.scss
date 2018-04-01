@@ -1,0 +1,21 @@
+@import "../common.scss";
+@import "../constant.scss";
+
+.add-product-container {
+
+  .product-name-row {
+
+    display: flex;
+
+    .product-name-input {
+      padding-right: $margin-padding-2;
+      flex-grow: 1;
+    }
+
+    .get-product-name-btn {
+      width: 100px;
+    }
+
+  }
+
+}

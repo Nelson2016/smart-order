@@ -2,7 +2,7 @@ import config from '../../config/config'
 
 export default {
 
-    host: config.debug ? 'http://localhost:3000' : 'http://localhost:8088',
+    host: config.debug ? 'http://localhost:3000' : 'http://nelsonlee.site:8088',
 
     GM: {
         loginQRLink: 'QR.png',

@@ -38,8 +38,7 @@ serverRoutes.all('*', async (ctx, next) => {
 
     let checkoutResult = await GMCheckoutOrder();
 
-    let GMIsBound = checkoutResult.errCode !== '003000001';
-
+    let GMIsBound = checkoutResult.status === 1;
     initState.isLogged = isLogged;
     initState.GMIsBound = GMIsBound;
 

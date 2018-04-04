@@ -3,6 +3,8 @@
 
 .idea
 
+dist
 
 node_modules
 
+dump.rdb

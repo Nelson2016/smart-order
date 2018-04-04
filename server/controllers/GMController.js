@@ -219,7 +219,10 @@ const GMGetList = async (ctx) => {
 
 const GMCheckoutOrder = async (ctx) => {
 
-    const GMInfo = await GMModel.findOne().exec();
+    const GMInfo = await GMModel.findOne().exec() || {
+        submitOrderCookie: [],
+        loginBaseCookie: []
+    };
 
     let result = await axios({
         method: 'post',

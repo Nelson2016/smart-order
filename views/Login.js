@@ -23,6 +23,7 @@ class Login extends React.Component {
         if (canSubmit) {
             let loginBtn = this.loginBtn;
             loginBtn.startLoading();
+
             functions.request(api.login, {
                 method: "POST",
                 body: {
@@ -30,6 +31,7 @@ class Login extends React.Component {
                     password: this.passwordInput.val(),
                 }
             }).then((res) => {
+                console.log(res);
                 if (res.status === 1) {
                     this.props.changeLoginStatus({isLogged: true, userInfo: res.data.userInfo})
                 } else {

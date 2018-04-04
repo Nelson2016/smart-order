@@ -26,6 +26,7 @@ const baseConfig = {
                 loader: 'babel-loader',
                 options: {
                     presets: ['es2015', 'stage-0', 'react'],
+                    plugins: ['transform-runtime']
                 },
             },
             //编译通过import动态引入的scss/css

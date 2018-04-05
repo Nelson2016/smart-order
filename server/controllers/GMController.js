@@ -97,7 +97,7 @@ const checkGMLogin = async (ctx) => {
 const setGMBindQR = async (ctx) => {
 
     //获取过没登录页二维码
-    await puppeteer.launch().then(async browser => {
+    await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']}).then(async browser => {
 
         console.log('建立浏览器');
 

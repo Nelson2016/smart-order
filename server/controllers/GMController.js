@@ -4,6 +4,7 @@ import GMModel from '../models/GMModel';
 import GMProductModel from '../models/GMProductModel';
 import functions from '../functions';
 import jsdom from "jsdom";
+import mongoose from 'mongoose';
 
 const {JSDOM} = jsdom;
 
@@ -235,7 +236,7 @@ const GMCheckoutOrder = async (ctx) => {
     });
 
     if (!ctx) {
-        return {status: result.data.success ? 1 : 0};
+        return {status: result.data.errCode !== '003000001' ? 1 : 0};
     } else if (result.data.loginStatus === 'success') {
 
         ctx.body = functions.setResponse(1, '登录成功', {loginStatus: 1});
@@ -438,6 +439,15 @@ const smartAddToCart = async (pid, sid, cookie) => {
     return {status: result.data.success ? 1 : 0};
 };
 
+const unBindGMAccount = async (ctx) => {
+    try {
+        await GMModel.findOneAndUpdate({}, {loginBaseCookie: [], submitOrderCookie: []});
+        ctx.body = functions.setResponse(1, '解绑成功');
+    } catch (e) {
+        ctx.body = functions.setResponse(0, '解绑失败');
+    }
+};
+
 export {
     setGMBindQR,
     checkGMScan,
@@ -447,5 +457,6 @@ export {
     GMCheckoutOrder,
     getProductInfoByPidSid,
     addToConnectCart,
-    smartOrder
+    smartOrder,
+    unBindGMAccount
 }

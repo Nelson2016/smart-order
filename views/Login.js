@@ -13,10 +13,10 @@ import functions from '../asset/js/functions';
 class Login extends React.Component {
 
     componentDidMount() {
-        functions.request(api.register, {
-            method: "POST",
-        }).then((res) => {
-        });
+        // functions.request(api.register, {
+        //     method: "POST",
+        // }).then((res) => {
+        // });
     }
 
     login(canSubmit) {

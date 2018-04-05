@@ -148,9 +148,8 @@ class GM extends React.Component {
         });
 
         if (res.status === 1) {
+
             Toast.success('下单成功');
-        } else {
-            Toast.success('下单失败');
         }
         this.goConnectCartBtn.endLoading();
     }

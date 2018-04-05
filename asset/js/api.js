@@ -7,6 +7,7 @@ export default {
     GM: {
         loginQRLink: 'QR.png',
         setGMBindQR: '/api/setGMBindQR',
+        unBindGMAccount: '/api/unBindGMAccount',
         checkGMScan: '/api/checkGMScan',
         checkGMLogin: '/api/checkGMLogin',
         GMAddProduct: '/api/GMAddProduct',

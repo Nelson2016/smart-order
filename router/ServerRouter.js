@@ -21,7 +21,10 @@ import {
     getProductInfoByPidSid,
     addToConnectCart,
     smartOrder,
-    unBindGMAccount
+    unBindGMAccount,
+    GMConnectList,
+    GMInitOrderData,
+    GMSetDefaultAddress
 } from '../server/controllers/GMController';
 
 //Models
@@ -96,6 +99,10 @@ serverRoutes.post('/api/addToConnectCart', addToConnectCart);
 serverRoutes.post('/api/smartOrder', smartOrder);
 serverRoutes.post('/api/GMAddProduct', GMAddProduct);
 serverRoutes.post('/api/unBindGMAccount', unBindGMAccount);
+serverRoutes.get('/api/GMConnectList', GMConnectList);
+serverRoutes.get('/api/GMInitOrderData', GMInitOrderData);
+serverRoutes.post('/api/GMSetDefaultAddress', GMSetDefaultAddress);
+
 
 
 export default serverRoutes;

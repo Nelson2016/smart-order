@@ -13,7 +13,9 @@ export default {
         breadcrumb: {
             GM: {
                 GM: "/GM",
-                GMAddProduct: "/GM/GMAddProduct"
+                GMAddProduct: "/GM/GMAddProduct",
+                GMConnectList: "/GM/GMConnectList",
+                GMSetOrderParam: "/GM/GMSetOrderParam"
             },
             // admin: {
             //     admin: {name: "首页", path: "/admin"},

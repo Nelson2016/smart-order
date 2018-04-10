@@ -12,9 +12,23 @@ const changeGMLoginStatus = (data) => {
     }
 };
 
-const updateGMListList = (data) => {
+const updateGMList = (data) => {
     return {
         type: "updateGMList",
+        data
+    }
+};
+
+const updateGMConnectList = (data) => {
+    return {
+        type: "updateGMConnectList",
+        data
+    }
+};
+
+const updateGMInitOrderParam = (data) => {
+    return {
+        type: "updateGMInitOrderParam",
         data
     }
 };
@@ -22,5 +36,7 @@ const updateGMListList = (data) => {
 export {
     changeLoginStatus,
     changeGMLoginStatus,
-    updateGMListList
+    updateGMConnectList,
+    updateGMList,
+    updateGMInitOrderParam
 };

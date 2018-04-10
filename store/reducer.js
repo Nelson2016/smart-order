@@ -8,6 +8,14 @@ let reducers = (state, action) => {
             return Object.assign({}, state, {
                 GMList: action.data
             });
+        case "updateGMConnectList":
+            return Object.assign({}, state, {
+                GMConnectList: action.data
+            });
+        case "updateGMInitOrderParam":
+            return Object.assign({}, state, {
+                GMInitOrderData: action.data
+            });
         default :
             return state;
     }

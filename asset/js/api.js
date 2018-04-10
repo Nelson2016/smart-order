@@ -12,9 +12,12 @@ export default {
         checkGMLogin: '/api/checkGMLogin',
         GMAddProduct: '/api/GMAddProduct',
         GMGetList: '/api/GMGetList',
+        GMConnectList: '/api/GMConnectList',
         getProductInfoByPidSid: '/api/getProductInfoByPidSid',
         addToConnectCart: '/api/addToConnectCart',
         smartOrder: '/api/smartOrder',
+        GMInitOrderData: '/api/GMInitOrderData',
+        GMSetDefaultAddress: '/api/GMSetDefaultAddress'
     },
 
     register: "/api/register",

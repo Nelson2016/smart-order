@@ -9,7 +9,7 @@ import api from '../../asset/js/api';
 
 import styles from '../../asset/scss/GM/GM-list.scss';
 
-import {updateGMListList} from '../../store/action';
+import {updateGMList} from '../../store/action';
 
 class GM extends React.Component {
 
@@ -27,7 +27,7 @@ class GM extends React.Component {
         });
         const {list, pages} = res.data;
 
-        this.props.updateGMListList(list);
+        this.props.updateGMList(list);
         this.pages.setPageData(pages.page, pages.totalPage);
     }
 
@@ -142,16 +142,9 @@ class GM extends React.Component {
     }
 
     async goConnectCart() {
-        this.goConnectCartBtn.startLoading();
-        const res = await functions.request(api.GM.smartOrder, {
-            method: "POST",
-        });
-
-        if (res.status === 1) {
-
-            Toast.success('下单成功');
-        }
-        this.goConnectCartBtn.endLoading();
+        this.props.history.push({
+            pathname: config.common.breadcrumb.GM.GMConnectList,
+        })
     }
 
     render() {
@@ -198,7 +191,7 @@ const mapStateToProps = (state, ownProps) => {
 
 const mapDispatchToProps = (dispatch, ownProps) => {
     return {
-        updateGMListList: (args) => dispatch(updateGMListList(args))
+        updateGMList: (args) => dispatch(updateGMList(args))
     }
 };
 

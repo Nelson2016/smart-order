@@ -18,6 +18,9 @@ const GMConfig = {
     smartCheckoutOrder: 'https://cart.gome.com.cn/home/api/checkout/checkout',
     smartInitOrder: 'https://cart.gome.com.cn/home/api/order/initOrder',
     smartSubmitOrder: 'https://cart.gome.com.cn/home/api/checkout/commit',
+    loadCart: 'https://cart.gome.com.cn/home/api/cart/loadCart',
+    setDefaultAddress: "https://cart.gome.com.cn/home/api/consignee/setDefaultAddress",
+    selectAddress:'https://cart.gome.com.cn/home/api/consignee/selectAddress',
     headers: {
         "loginStep": "application/json, text/javascript, */*; q=0.01",
         "accept-encoding": "gzip, deflate, br",
@@ -331,17 +334,9 @@ const smartSubmitOrder = async (cookie) => {
     };
 };
 
-const smartCheckoutOrder = async (cookie) => {
-
-    //检查订单结果
-    let checkout = await GMCheckoutOrder();
-    if (checkout.status === 0) {
-        console.log('检查下单状态错误');
-        return checkout;
-    }
-
+const initOrder = async (cookie) => {
     //初始化订单数据
-    let initOrder = await axios({
+    let result = await axios({
         method: 'post',
         url: GMConfig.smartInitOrder,
         headers: Object.assign({}, GMConfig, {
@@ -354,18 +349,33 @@ const smartCheckoutOrder = async (cookie) => {
         }
     });
 
-    if (!initOrder.data.success) {
+    return result;
+};
+
+const smartCheckoutOrder = async (cookie) => {
+
+    //检查订单结果
+    let checkout = await GMCheckoutOrder();
+    if (checkout.status === 0) {
+        console.log('检查下单状态错误');
+        return checkout;
+    }
+
+    //初始化订单数据
+    let initOrderData = await initOrder(cookie);
+
+    if (!initOrderData.data.success) {
         console.log('初始化订单数据失败');
         return {status: 0}
     }
 
-    let ss = initOrder.data.data.shops[0].groups.map((item) => {
+    let ss = initOrderData.data.data.shops[0].groups.map((item) => {
         return item.commerceItemsGroup[0].skuId
     });
 
     ss = ss.join(',');
 
-    let ac = initOrder.data.data.pg.paymentMethods[5].a.countyCode;
+    let ac = initOrderData.data.data.pg.paymentMethods[5].a.countyCode;
 
     console.log('开始配置订单参数');
 
@@ -448,6 +458,116 @@ const unBindGMAccount = async (ctx) => {
     }
 };
 
+const GMConnectList = async (ctx) => {
+
+    const GMInfo = await GMModel.findOne().exec(),
+        GMInfoCookie = functions.cookieParser(GMInfo.loginBaseCookie.concat(GMInfo.submitOrderCookie));
+
+    let result = await axios({
+        method: 'post',
+        url: GMConfig.loadCart,
+        headers: {
+            "loginStep": "application/json, text/javascript, */*; q=0.01",
+            "accept-encoding": "gzip, deflate, br",
+            "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "content-length": 0,
+            "cookie": GMInfoCookie,
+            "origin": GMConfig.origin,
+            "referer": 'https://cart.gome.com.cn/',
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
+            "x-requested-with": "with:XMLHttpRequest"
+        },
+    });
+
+    if (result.data.success) {
+
+        const data = result.data.data.siVOs || [];
+        let list = [];
+
+        for (let i = 0; i < data.length; i++) {
+            let Groups = data[i].commerceItemsGroups;
+            for (let j = 0; j < Groups.length; j++) {
+                let Group = Groups[j].commerceItemsGroup;
+                for (let k = 0; k < Group.length; k++) {
+                    list.push(Group[k])
+                }
+            }
+        }
+
+        ctx.body = functions.setResponse(1, '获取成功', list);
+    } else {
+        ctx.body = functions.setResponse(0, '获取失败');
+    }
+};
+
+const GMInitOrderData = async (ctx) => {
+
+    const GMInfo = await GMModel.findOne().exec(),
+        GMInfoCookie = functions.cookieParser(GMInfo.loginBaseCookie.concat(GMInfo.submitOrderCookie));
+
+    let initOrderData = await initOrder(GMInfoCookie);
+
+    if (initOrderData.data.success) {
+        ctx.body = functions.setResponse(1, '获取成功', initOrderData.data.data);
+    } else {
+        ctx.body = functions.setResponse(0, '获取失败');
+    }
+};
+
+const GMSetDefaultAddress = async (ctx) => {
+    const param = ctx.request.body,
+        {addressId} = param,
+        GMInfo = await GMModel.findOne().exec(),
+        GMInfoCookie = functions.cookieParser(GMInfo.loginBaseCookie.concat(GMInfo.submitOrderCookie));
+
+    let result = await axios({
+        method: 'post',
+        url: GMConfig.setDefaultAddress,
+        headers: {
+            "accept-encoding": "gzip, deflate, br",
+            "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "content-length": 0,
+            "cookie": GMInfoCookie,
+            "origin": 'https://cart.gome.com.cn',
+            "referer": 'https://cart.gome.com.cn/shopping',
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
+            "x-requested-with": "with:XMLHttpRequest"
+        },
+        params: {
+            id: addressId,
+            _: new Date().valueOf()
+        }
+    });
+
+    let result1 = await axios({
+        method: 'post',
+        url: GMConfig.selectAddress,
+        headers: {
+            "accept-encoding": "gzip, deflate, br",
+            "accept-language": "zh-CN,zh;q=0.9,en;q=0.8",
+            "content-length": 0,
+            "cookie": GMInfoCookie,
+            "origin": 'https://cart.gome.com.cn',
+            "referer": 'https://cart.gome.com.cn/shopping',
+            "user-agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36",
+            "x-requested-with": "with:XMLHttpRequest"
+        },
+        params: {
+            id: addressId,
+            _: new Date().valueOf()
+        }
+    });
+
+    console.log(result.data)
+    console.log(result1.data)
+
+    if (result.data.success && result1.data.success) {
+        ctx.body = functions.setResponse(1, '设置成功');
+    } else {
+        ctx.body = functions.setResponse(0, '设置失败');
+    }
+};
+
 export {
     setGMBindQR,
     checkGMScan,
@@ -458,5 +578,8 @@ export {
     getProductInfoByPidSid,
     addToConnectCart,
     smartOrder,
-    unBindGMAccount
+    unBindGMAccount,
+    GMConnectList,
+    GMInitOrderData,
+    GMSetDefaultAddress
 }
